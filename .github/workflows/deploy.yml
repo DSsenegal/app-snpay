@@ -1,0 +1,20 @@
+name: Deploy to App Vercel
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build project
+        run: pnpm run build
+        env:
+          APP_IFRAME_BASE_URL: ${{ secrets.APP_IFRAME_BASE_URL }}
+          APP_API_BASE_URL: ${{ secrets.APP_API_BASE_URL }}
+      - name: Deploy to Vercel
+        run: vercel --prod --token ${{ secrets.VERCEL_TOKEN }} -y
