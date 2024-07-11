@@ -21,22 +21,19 @@ export const paymentGatewayInitializeSessionSyncWebhook =
     webhookPath: "api/webhooks/payment-gateway-initialize-session",
   });
 
-export default paymentGatewayInitializeSessionSyncWebhook.createHandler((req, res, ctx) => {
-  const { payload, event, baseUrl, authData } = ctx;
-
-  console.log(payload, event, baseUrl, authData);
-
-  const paymentMethods = [
-    {
-      id: "senpay.saleor.app",
+export default paymentGatewayInitializeSessionSyncWebhook.createHandler((req, res, { event }) => {
+  const data = {
+    publishableKey: "publishableKey",
+    paymentMethodsResponse: {
+      id: "senpay-saleor-app",
       name: "Senpay",
       currencies: ["USD", "EUR", "XOF"],
-      config: {
-        // Configuration details for your payment method
-      },
+      config: {},
     },
-  ];
+  };
+  const paymentGatewayInitializeSessionResponse: any = {
+    data,
+  };
 
-  // Respond with the payment methods
-  res.status(200).json({ payment_methods: paymentMethods });
+  return paymentGatewayInitializeSessionResponse;
 });

@@ -43,7 +43,7 @@ const OrderCreatedGraphqlSubscription = gql`
  */
 export const orderCreatedWebhook = new SaleorAsyncWebhook<OrderCreatedWebhookPayloadFragment>({
   name: "Order Created in Saleor",
-  webhookPath: "api/webhooks/order-created",
+  webhookPath: "/api/webhooks/order-created",
   event: "ORDER_CREATED",
   apl: saleorApp.apl,
   query: OrderCreatedGraphqlSubscription,
@@ -81,12 +81,12 @@ export default orderCreatedWebhook.createHandler((req, res, ctx) => {
    * Create GraphQL client to interact with Saleor API.
    */
   const client = createClient(authData.saleorApiUrl, async () => ({ token: authData.token }));
-  
+
   /**
    * Now you can fetch additional data using urql.
    * https://formidable.com/open-source/urql/docs/api/core/#clientquery
    */
-  
+
   // const data = await client.query().toPromise()
 
   /**
