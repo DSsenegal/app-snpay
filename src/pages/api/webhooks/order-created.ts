@@ -3,6 +3,7 @@ import { SaleorAsyncWebhook } from "@saleor/app-sdk/handlers/next";
 import { OrderCreatedWebhookPayloadFragment } from "../../../../generated/graphql";
 import { saleorApp } from "../../../saleor-app";
 import { createClient } from "../../../lib/create-graphq-client";
+import { createTransaction } from "@/services/create-transaction";
 
 /**
  * Example payload of the webhook. It will be transformed with graphql-codegen to Typescript type: OrderCreatedWebhookPayloadFragment
@@ -17,6 +18,12 @@ const OrderCreatedWebhookPayload = gql`
         email
         firstName
         lastName
+      }
+      total {
+        gross {
+          amount
+          currency
+        }
       }
     }
   }
@@ -52,7 +59,7 @@ export const orderCreatedWebhook = new SaleorAsyncWebhook<OrderCreatedWebhookPay
 /**
  * Export decorated Next.js handler, which adds extra context
  */
-export default orderCreatedWebhook.createHandler((req, res, ctx) => {
+export default orderCreatedWebhook.createHandler(async (req, res, ctx) => {
   const {
     /**
      * Access payload from Saleor - defined above
@@ -81,13 +88,30 @@ export default orderCreatedWebhook.createHandler((req, res, ctx) => {
    * Create GraphQL client to interact with Saleor API.
    */
   const client = createClient(authData.saleorApiUrl, async () => ({ token: authData.token }));
-  
+
   /**
    * Now you can fetch additional data using urql.
    * https://formidable.com/open-source/urql/docs/api/core/#clientquery
    */
-  
+
   // const data = await client.query().toPromise()
+
+  try {
+    const transaction = createTransaction(
+      {
+        orderId: payload.order?.id,
+        amount: payload.order?.total.gross.amount,
+        currency: payload.order?.total.gross.currency,
+        externalUrl: `${process.env.APP_IFRAME_BASE_URL}/checkout/${payload.order?.id}`,
+        pspReference: "psp" + payload.order?.id,
+      },
+      client
+    );
+
+    console.log(transaction);
+  } catch (error) {
+    console.error("Error creating transaction", error);
+  }
 
   /**
    * Inform Saleor that webhook was delivered properly.

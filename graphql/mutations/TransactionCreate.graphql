@@ -1,0 +1,35 @@
+mutation TransactionCreate(
+  $orderId: ID!
+  $amount: PositiveDecimal!
+  $currency: String!
+  $availableActions: [TransactionActionEnum!]!
+  $externalUrl: String!
+  $message: String
+  $pspReference: String!
+) {
+  transactionCreate(
+    id: $orderId
+    transaction: {
+      name: "senpay"
+      message: $message
+      pspReference: $pspReference
+      availableActions: $availableActions
+      amountAuthorized: { currency: $currency, amount: $amount }
+      externalUrl: $externalUrl
+    }
+  ) {
+    transaction {
+      id
+      order {
+        id
+        total {
+          gross {
+            amount
+          }
+        }
+        status
+        paymentStatus
+      }
+    }
+  }
+}

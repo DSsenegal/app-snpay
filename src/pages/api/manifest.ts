@@ -19,7 +19,7 @@ export default createManifestHandler({
     const apiBaseURL = process.env.APP_API_BASE_URL ?? appBaseUrl;
 
     const manifest: AppManifest = {
-      name: 'Saleor App Template',
+      name: "Senpay",
       tokenTargetUrl: `${apiBaseURL}/api/register`,
       appUrl: iframeBaseUrl,
       /**
@@ -33,8 +33,10 @@ export default createManifestHandler({
          * This can be removed
          */
         "MANAGE_ORDERS",
+        "MANAGE_CHECKOUTS",
+        "HANDLE_PAYMENTS",
       ],
-      id: "saleor.app",
+      id: "senpay.saleor.app",
       version: packageJson.version,
       /**
        * Configure webhooks here. They will be created in Saleor during installation
@@ -50,7 +52,7 @@ export default createManifestHandler({
        * https://docs.saleor.io/docs/3.x/developer/extending/apps/extending-dashboard-with-apps
        */
       extensions: [],
-      author: "Saleor Commerce",
+      author: "DSsenegal",
       brand: {
         logo: {
           default: `${apiBaseURL}/logo.png`,
