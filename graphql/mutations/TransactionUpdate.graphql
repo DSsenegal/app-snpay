@@ -1,0 +1,36 @@
+mutation TransactionUpdate(
+  $transactionId: ID!
+  $amount: PositiveDecimal!
+  $currency: String!
+  $pspReference: String!
+  $pspReferenceEvent: String!
+) {
+  transactionUpdate(
+    id: $transactionId
+    transaction: {
+      name: "Senpay"
+      message: "Authorized"
+      pspReference: $pspReference
+      availableActions: [REFUND]
+      amountAuthorized: { currency: $currency, amount: 0 }
+      amountCharged: { currency: $currency, amount: $amount }
+    }
+    transactionEvent: { message: "Payment charged", pspReference: $pspReferenceEvent }
+  ) {
+    transaction {
+      id
+      name
+      order {
+        id
+        total {
+          gross {
+            amount
+            currency
+          }
+        }
+        status
+        paymentStatus
+      }
+    }
+  }
+}

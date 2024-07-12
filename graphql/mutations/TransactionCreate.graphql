@@ -25,6 +25,7 @@ mutation TransactionCreate(
         total {
           gross {
             amount
+            currency
           }
         }
         status
