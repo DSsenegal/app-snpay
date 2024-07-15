@@ -19,6 +19,7 @@ query OrderDetails($id: ID!) {
     transactions {
       id
       name
+      pspReference
     }
   }
 }
