@@ -15,7 +15,10 @@ export default async function SenpayWebhookHandler(
     return;
   } else {
     const transaction = req.body as CallbackPayload;
-    const authData = await saleorApp.apl.get(`${process.env.APP_GRAPHQL_URL}`);
+    const payload = JSON.parse(transaction.CUSTOM_DATA) as OrderDetailsQuery & {
+      saleorDomain: string;
+    };
+    const authData = await saleorApp.apl.get(`https://${payload?.saleorDomain}/graphql/`);
 
     if (!authData) {
       res.status(500).json({ error: "Error fetching auth data" });
@@ -25,8 +28,6 @@ export default async function SenpayWebhookHandler(
 
     if (transaction.STATUS === "SUCCESS") {
       console.log("Transaction was successful");
-      const payload = JSON.parse(transaction.CUSTOM_DATA) as OrderDetailsQuery;
-      console.log(payload);
 
       try {
         const transaction = await updateTransaction(

@@ -5,6 +5,7 @@ import { OrderDetailsQuery, UntypedOrderDetailsDocument } from "../../../generat
 import { saleorApp } from "@/saleor-app";
 import { createClient } from "@/lib/create-graphq-client";
 import { createPaymentLink } from "@/services/create-payment-link";
+import { createSettingsManager } from "@/lib/metadata";
 
 export default function Page({ paymentUrl }: { paymentUrl: string }) {
   const router = useRouter();
@@ -21,7 +22,8 @@ export default function Page({ paymentUrl }: { paymentUrl: string }) {
 
 export async function getServerSideProps(ctx: any) {
   const orderId = ctx.params.orderId;
-  const authData = await saleorApp.apl.get(`${process.env.APP_GRAPHQL_URL}`);
+  const saleorDomain = ctx.query.saleorDomain;
+  const authData = await saleorApp.apl.get(`https://${saleorDomain}/graphql/`);
 
   if (!authData || !orderId) {
     return {
@@ -51,7 +53,10 @@ export async function getServerSideProps(ctx: any) {
     };
   }
 
-  const paymentUrl = await createPaymentLink(data);
+  const settings = createSettingsManager(client);
+  const apiKey = (await settings.get("apiKey", authData.domain)) as string;
+
+  const paymentUrl = await createPaymentLink(data, apiKey, authData.domain as string);
 
   return {
     props: {
