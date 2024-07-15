@@ -34,8 +34,9 @@ export default createManifestHandler({
          *
          * This can be removed
          */
-        "HANDLE_PAYMENTS",
+        "MANAGE_ORDERS",
         "MANAGE_CHECKOUTS",
+        "HANDLE_PAYMENTS",
       ],
       id: "senpay.saleor.app",
       version: packageJson.version,
