@@ -1,0 +1,7 @@
+mutation OrderCreateFromCheckout($id: ID!) {
+  orderCreateFromCheckout(id: $id, removeCheckout: false) {
+    order {
+      id
+    }
+  }
+}
