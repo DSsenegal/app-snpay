@@ -102,7 +102,7 @@ export default orderCreatedWebhook.createHandler(async (req, res, ctx) => {
         orderId: payload.order?.id,
         amount: payload.order?.total.gross.amount,
         currency: payload.order?.total.gross.currency,
-        externalUrl: `${process.env.APP_IFRAME_BASE_URL}/checkout/${payload.order?.id}`,
+        externalUrl: `${process.env.APP_IFRAME_BASE_URL}/checkout/${payload.order?.id}?saleorDomain=${authData.domain}`,
         pspReference: "psp" + payload.order?.id,
       },
       client
