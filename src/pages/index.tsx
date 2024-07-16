@@ -5,6 +5,7 @@ import { NextPage } from "next";
 import Link from "next/link";
 import { MouseEventHandler, useEffect, useState } from "react";
 import { SettingsApiResponse } from "./api/settings";
+import { error } from "console";
 
 const AddToSaleorForm = () => (
   <Box
@@ -52,13 +53,18 @@ const IndexPage: NextPage = () => {
         [SALEOR_DOMAIN_HEADER, appBridgeState?.domain!],
         [SALEOR_AUTHORIZATION_BEARER_HEADER, appBridgeState?.token!],
       ],
-    }).then(async (response) => {
-      const { data } = (await response.json()) as SettingsApiResponse;
-      if (data?.apiKey && data?.marchantUrl) {
-        setConfig(data);
+    })
+      .then(async (response) => {
+        const { data } = (await response.json()) as SettingsApiResponse;
+        if (data?.apiKey && data?.marchantUrl) {
+          setConfig(data);
+        }
         setLoading(false);
-      }
-    });
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
   }, [appBridgeState?.token, appBridgeState?.domain]);
 
   return (
