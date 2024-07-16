@@ -27,6 +27,9 @@ export interface SettingsApiResponse {
 // Obfuscate function will hide secret value with dots, leaving only last 4 and first 4
 // characters which should be enough for the user to know if thats a right value.
 const obfuscateSecret = (secret: string) => {
+  if (!secret) {
+    return "";
+  }
   return `${secret.slice(0, 6)}${"*".repeat(14)}${secret.slice(-6)}`;
 };
 
