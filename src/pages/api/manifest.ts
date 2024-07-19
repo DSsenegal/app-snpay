@@ -6,6 +6,7 @@ import { orderCreatedWebhook } from "./webhooks/order-created";
 import { paymentGatewayInitializeSessionSyncWebhook } from "./webhooks/payment-gateway-initialize-session";
 import { transactionInitializeSessionSyncWebhook } from "./webhooks/transaction-initialize-session";
 import { checkoutCreatedWebhook } from "./webhooks/checkout-created";
+import { getConfig } from "@/lib/config";
 
 /**
  * App SDK helps with the valid Saleor App Manifest creation. Read more:
@@ -20,11 +21,15 @@ export default createManifestHandler({
      */
     const iframeBaseUrl = process.env.APP_IFRAME_BASE_URL ?? appBaseUrl;
     const apiBaseURL = process.env.APP_API_BASE_URL ?? appBaseUrl;
+    const appId = getConfig("appId");
+    const appName = getConfig("name");
+    const homepageUrl = process.env.HOME_PAGE;
 
     const manifest: AppManifest = {
-      name: "Senpay",
+      name: appName,
       tokenTargetUrl: `${apiBaseURL}/api/register`,
       appUrl: iframeBaseUrl,
+      homepageUrl: homepageUrl,
       /**
        * Set permissions for app if needed
        * https://docs.saleor.io/docs/3.x/developer/permissions
@@ -40,7 +45,7 @@ export default createManifestHandler({
         "HANDLE_CHECKOUTS",
         "HANDLE_PAYMENTS",
       ],
-      id: "senpay.saleor.app",
+      id: appId,
       version: packageJson.version,
       /**
        * Configure webhooks here. They will be created in Saleor during installation
