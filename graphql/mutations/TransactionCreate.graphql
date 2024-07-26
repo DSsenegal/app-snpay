@@ -20,6 +20,7 @@ mutation TransactionCreate(
   ) {
     transaction {
       id
+      externalUrl
       order {
         id
         total {
